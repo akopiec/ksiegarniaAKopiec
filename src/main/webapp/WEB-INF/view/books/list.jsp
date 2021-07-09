@@ -38,7 +38,7 @@
 <div>
 <c:url var="koszyk" value="/cart/lista"> </c:url>
     <input type="button" value="Add Book" onclick="window.location.href='formadd';return false;"/>
-    <p><a href="${koszyk}">Koszyk</a></p><p>a</p>
+    <p><a href="${koszyk}">Koszyk</a></p><p>aa</p>
 </div>
 </body>
 </html>
