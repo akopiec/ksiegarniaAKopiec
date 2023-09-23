@@ -31,4 +31,6 @@ class="form-control"/></td>
  </tr>
  </tbody>
  </table>
-</form:form></body></html>
+</form:form>
+</body>
+</html>

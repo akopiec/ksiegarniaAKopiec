@@ -2,115 +2,139 @@ package pl.umcs.controller;
 import org.springframework.web.bind.annotation.*;
 import pl.umcs.Cart;
 import pl.umcs.entity.Book;
-import pl.umcs.entity.Category;
-import pl.umcs.services.AuthorService;
-import pl.umcs.services.BookService;
+import pl.umcs.entity.Comment;
+import pl.umcs.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-//import org.springframework.web.bind.annotation.GetMapping;
-import pl.umcs.services.CategoryService;
 
-import java.util.ArrayList;
-import java.util.Iterator;
+
+import java.time.LocalDate;
 import java.util.List;
 
 @Controller
 @RequestMapping("/books")
 public class BookController {
-            private final BookService bookService;
-          private  final CategoryService categoryService;
-          private  final AuthorService authorService;
-          //private BookService bookService;
-          private final Cart cart=new Cart();
-
     @Autowired
-    public BookController(BookService bookService,
-                          AuthorService authorService,
-                          CategoryService categoryService)
-    {
-        this.bookService = bookService;
-        this.authorService = authorService;
-        this.categoryService = categoryService;
-    }
-
-    /*@Autowired
-    public void setBookService(BookService bookService) {
-        this.bookService = bookService;
-    }
+    private BookService bookService;
     @Autowired
-    public void setCategoryService(CategoryService categoryService) {
-        this.categoryService = categoryService;
-    }
+    private CategoryService categoryService;
     @Autowired
-    public void setAuthorService(AuthorService authorService) {
-        this.authorService = authorService;
-    }
-        private  BookService bookService;
-        @Autowired
-        public BookController(BookService bookService)
-        {
-            this.bookService = bookService;*/
+    private AuthorService authorService;
+    @Autowired
+    private CommentService commentService;
 
-        @GetMapping("/list")
-        public String listBook(Model model)
-        {
+    private  Cart cart;
+
+    @GetMapping("/list")
+        public String listBook(Model model) {
+
             List<Book> result = bookService.getBooks();
+
             model.addAttribute("books", result);
+
             return "books/list";
         }
+
+
+
     @GetMapping("/formadd")
-    public String addForm(Model model)
-    {
+    public String addForm(Model model) {
+
         Book book = new Book();
+
         model.addAttribute("book", book);
+
         model.addAttribute("categories", categoryService.getCategories());
+
         model.addAttribute("authors", authorService.getAuthors());
+
         return "books/formadd";
     }
 
     @PostMapping("/saveBook")
-    public String saveBook(@ModelAttribute("book") Book book)
-    {
+    public String saveBook(@ModelAttribute("book") Book book) {
+
         bookService.saveBook(book);
+
         return "redirect:/books/list";
     }
+
     @GetMapping("/edit")
-    public String edit(@RequestParam("bookId") long bookId, Model model)
-    {
+    public String edit(@RequestParam("bookId") long bookId, Model model) {
+
         model.addAttribute("book", bookService.getBook(bookId));
+
         model.addAttribute("categories", categoryService.getCategories());
+
         model.addAttribute("authors", authorService.getAuthors());
+
         return "books/formadd";
     }
-    @GetMapping("delete")
-    public String deleteBook(@RequestParam("bookId") long bookId)
-    {
+
+    @GetMapping("/delete/{bookId}")
+    public String deleteBook(@PathVariable("bookId") long bookId,Model model) {
+
         bookService.deleteBook(bookId);
-        return "redirect:/books/list";
+
+        List<Book> result = bookService.getBooks();
+
+        model.addAttribute("books", result);
+
+        return "/books/list";
+    }
+    @GetMapping("/detail/{bookId}")
+    public String bookDetail(@PathVariable("bookId")long bookId,Model model){
+
+        Book book;
+
+        book=bookService.getBook(bookId);
+
+        List<Comment> commentList=commentService.getComments(book);
+
+        model.addAttribute("book",book);
+
+        model.addAttribute("listComment",commentList);
+
+        return "books/detail";
     }
 
-    @GetMapping("/dodajDoKoszyka")
-    public String dodajDoKoszyka(@RequestParam("bookId")long bookId,Model model){
-       cart.addBookId(bookId);
-       List<Book> listbook=new ArrayList<>();
-       Iterator<Long> iter=cart.getBookId().iterator();
-       while(iter.hasNext()){
-           listbook.add(bookService.getBook(iter.next()));
+    @GetMapping("/comment/{bookId}")
+    public String formComment(Model model){
 
-       }model.addAttribute("listBook",listbook);
-       return "books/koszykBook";
+        model.addAttribute("comment",new Comment());
 
+        return "books/comment";
+    }
+    @PostMapping("/comment/{bookId}")
+    public String addComment(@ModelAttribute("comment")Comment comment,@PathVariable("bookId")long bookId,Model model){
+
+        Comment commentadd=new Comment();
+
+        String description=comment.getDescription();
+
+        commentadd.setDescription(description);
+
+        LocalDate created= LocalDate.now();
+
+        LocalDate updated=LocalDate.now();
+
+        commentadd.setCreated(created);
+
+        commentadd.setUpdated(updated);
+
+        Book book=bookService.getBook(bookId);
+
+        commentService.saveComment(commentadd,book);
+
+        List<Comment> commentList=commentService.getComments(book);
+
+        model.addAttribute("listComment",commentList);
+
+        model.addAttribute("book",book);
+
+        return "redirect:/books/detail/{bookId}";
     }
 
-   /* @GetMapping("/add")
-    public String add(Model model) {
-        Book book = new Book();
-        List<Category> categories = categoryService.getCategories();
-        model.addAttribute("book", book);
-        model.addAttribute("categories", categories);
-        model.addAttribute("authors", authorService.getAuthors());
-        return "books/form";*/
-
-    }
+}
 

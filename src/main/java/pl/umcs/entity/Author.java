@@ -22,75 +22,81 @@ public class Author {
             inverseJoinColumns = @JoinColumn(name = "ksiazka_id"))
     List<Book> books;
 
-    public Author()
-    {
-        books = new ArrayList<>();
+    public Author(){
+
+    books = new ArrayList<>();
+
     }
-    public Author(String firstName, String lastName)
-    {
+    public Author(String firstName, String lastName) {
+
         this.firstName = firstName;
+
         this.lastName = lastName;
+
         books = new ArrayList<>();
     }
-    public Author(String id)
-    {
+    public Author(String id) {
+
         this.id = Long.parseLong(id);
     }
 
 
-    public Long getId()
-    {
+    public Long getId() {
+
         return id;
     }
-    public void setId(long id)
-    {
+    public void setId(long id) {
+
         this.id = id;
     }
 
-    public String getFirstName()
-    {
+    public String getFirstName() {
+
         return firstName;
     }
-    public void setFirstName(String imie)
-    {
+    public void setFirstName(String imie) {
+
         this.firstName = imie;
     }
 
-    public String getLastName()
-    {
+    public String getLastName() {
+
         return lastName;
     }
-    public void setLastName(String nazwisko)
-    {
+    public void setLastName(String nazwisko) {
+
         this.lastName = nazwisko;
     }
-    public List<Book> getBooks()
-    {
+    public List<Book> getBooks() {
+
         return books;
     }
-    public void setBooks(List<Book> books)
-    {
+    public void setBooks(List<Book> books) {
+
         this.books = books;
     }
-    public void addBook(Book book)
-    {
+    public void addBook(Book book) {
+
         if (books == null) {
+
             books = new ArrayList<>();
         }
         books.add(book);
     }
-    public void removeBook(Book book)
-    {
+    public void removeBook(Book book) {
+
         books.remove(book);
     }
 
     public String getFullName()
     {
+
         return firstName + " " + lastName;
     }
     @Override
     public String toString()
     {
+
         return getFullName();
     }
 }

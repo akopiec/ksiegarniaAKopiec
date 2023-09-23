@@ -27,72 +27,105 @@ public class Book {
             joinColumns = @JoinColumn(name = "ksiazka_id"),
             inverseJoinColumns = @JoinColumn(name = "autor_id"))
     List<Author> authors;
+    @OneToMany(cascade = {CascadeType.ALL},mappedBy = "book")
+    private List<Comment> commentList;
+    @OneToOne(cascade=CascadeType.REMOVE,mappedBy = "book")
+    private OrderItem orderItem;
 
     public Book() {
     }
 
     public Long getId()
     {
+
         return id;
     }
-    public void setId(Long id)
-    {
+    public void setId(Long id) {
+
         this.id = id;
     }
 
-    public String getTitle()
-    {
+    public String getTitle() {
+
         return title;
     }
-    public void setTitle(String nazwa)
-    {
+    public void setTitle(String nazwa) {
+
         this.title = nazwa;
     }
 
-    public String getPublisher()
-    {
+    public String getPublisher() {
+
         return publisher;
     }
-    public void setPublisher(String wydawnictwo)
-    {
+    public void setPublisher(String wydawnictwo) {
+
         this.publisher = wydawnictwo;
     }
 
-    public Float getPrice()
-    {
+    public Float getPrice() {
+
         return price;
     }
-    public void setPrice(float cena)
-    {
+    public void setPrice(float cena) {
+
         this.price = cena;
     }
-    public List<Author> getAuthors()
-    {
+    public List<Author> getAuthors() {
+
         return authors;
     }
-    public void setAuthors(List<Author> authors)
-    {
+    public void setAuthors(List<Author> authors) {
+
         this.authors = authors;
     }
+
+    public List<Comment> getCommentList() {
+
+        return commentList;
+    }
+
+    public void setCommentList(List<Comment> commentList) {
+
+        this.commentList = commentList;
+    }
+
     public void addAuthor(Author author)
     {
         if (author == null) {
+
             authors = new ArrayList<>();
         }
         authors.add(author);
     }
-    public void removeAuthor(Author author)
-    {
+    public void removeAuthor(Author author) {
+
         authors.remove(author);
     }
 
     public void setCategory(Category category) {
+
         this.category = category;
     }
 
 
     public Category getCategory() {
         return category;
+    }
+
+    public void setPrice(Float price) {
+
+        this.price = price;
+    }
+
+    public OrderItem getOrderItem() {
+
+        return orderItem;
+    }
+
+    public void setOrderItem(OrderItem orderItem) {
+
+        this.orderItem = orderItem;
     }
 }
 
